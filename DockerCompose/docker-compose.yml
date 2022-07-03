@@ -33,7 +33,7 @@ services:
       - all_in_one
     # Disable ports if using Traefik.
     ports:
-      - "80:8000"
+      - "9180:8000"
 
   elasticsearch:
     environment:
@@ -137,7 +137,7 @@ services:
       - "traefik.http.services.mayan_frontend.loadbalancer.server.port=8000"
     # Disable ports if using Traefik.
     ports:
-      - "80:8000"
+      - "9180:8000"
     profiles:
       - extra_frontend
 

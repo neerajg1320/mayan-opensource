@@ -5,16 +5,16 @@ install:
 
 # To check the config
 config:
-	docker-compose --file docker-compose.yml --project-name mayan config
+	docker compose --file docker-compose.yml --project-name mayan config
 
 # To start the containers
 up:
-	docker-compose --file docker-compose.yml --project-name mayan up --detach
+	docker compose --file docker-compose.yml --project-name mayan up --detach
 
 # To view the logs
 logs:
-	docker-compose --file docker-compose.yml --project-name mayan logs
+	docker compose --file docker-compose.yml --project-name mayan logs
 
 # To list the containers
 ps:
-	docker-compose --file docker-compose.yml --project-name mayan ps --all
+	docker compose --file docker-compose.yml --project-name mayan ps --all
