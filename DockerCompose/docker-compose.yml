@@ -9,7 +9,7 @@ x-mayan-container:
     MAYAN_DATABASES: "{'default':{'ENGINE':'django.db.backends.postgresql','NAME':'${MAYAN_DATABASE_NAME:-mayan}','PASSWORD':'${MAYAN_DATABASE_PASSWORD:-mayandbpass}','USER':'${MAYAN_DATABASE_USER:-mayan}','HOST':'${MAYAN_DATABASE_HOST:-postgresql}'}}"
     MAYAN_LOCK_MANAGER_BACKEND: mayan.apps.lock_manager.backends.redis_lock.RedisLock
     MAYAN_LOCK_MANAGER_BACKEND_ARGUMENTS: "{'redis_url':'redis://:${MAYAN_REDIS_PASSWORD:-mayanredispassword}@redis:6379/2'}"
-  image: ${MAYAN_DOCKER_IMAGE_NAME:-mayanedms/mayanedms}:${MAYAN_DOCKER_IMAGE_TAG:-s4.2}
+  image: ${MAYAN_DOCKER_IMAGE_NAME:-mayanedms/mayanedms}:${MAYAN_DOCKER_IMAGE_TAG:-s4.3}
   networks:
     - mayan
   restart: unless-stopped
@@ -78,7 +78,7 @@ services:
       POSTGRES_DB: ${MAYAN_DATABASE_NAME:-mayan}
       POSTGRES_PASSWORD: ${MAYAN_DATABASE_PASSWORD:-mayandbpass}
       POSTGRES_USER: ${MAYAN_DATABASE_USER:-mayan}
-    image: postgres:${MAYAN_DOCKER_POSTGRES_TAG:-12.9-alpine}
+    image: postgres:${MAYAN_DOCKER_POSTGRES_TAG:-12.10-alpine}
     networks:
       - mayan
     # Enable to allow external access to the database.
@@ -137,7 +137,7 @@ services:
       - "traefik.http.services.mayan_frontend.loadbalancer.server.port=8000"
     # Disable ports if using Traefik.
     ports:
-      - "9180:8000"
+      - "80:8000"
     profiles:
       - extra_frontend
 
@@ -221,16 +221,16 @@ services:
     profiles:
       - extra_celery_beat
 
-  command_initialsetup_or_performupgrade:
+  setup_or_upgrade:
     <<: *mayan-container
     command:
-      - run_initialsetup_or_performupgrade
+      - run_initial_setup_or_perform_upgrade
     profiles:
-      - extra_command_initialsetup_or_performupgrade
+      - extra_setup_or_upgrade
     restart: "no"
 
   rabbitmq:
-    image: rabbitmq:${MAYAN_DOCKER_RABBITMQ_TAG:-3.9-management-alpine}
+    image: rabbitmq:${MAYAN_DOCKER_RABBITMQ_TAG:-3.10-management-alpine}
     environment:
       RABBITMQ_DEFAULT_USER: ${MAYAN_RABBITMQ_USER:-mayan}
       RABBITMQ_DEFAULT_PASS: ${MAYAN_RABBITMQ_PASSWORD:-mayanrabbitpass}
@@ -274,6 +274,7 @@ services:
       - "8080:8080"
     profiles:
       - traefik
+    restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-certificates-letsencrypt:/traefik-certificates-letsencrypt
@@ -281,7 +282,6 @@ services:
 volumes:
   app:
   elasticsearch:
-  pgadmin:
   postgres:
   mountindex:
   rabbitmq:

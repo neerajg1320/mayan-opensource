@@ -11,6 +11,10 @@ config:
 up:
 	docker compose --file docker-compose.yml --project-name mayan up --detach
 
+# To start the containers
+stop:
+	docker compose --file docker-compose.yml --project-name mayan stop
+
 # To view the logs
 logs:
 	docker compose --file docker-compose.yml --project-name mayan logs
